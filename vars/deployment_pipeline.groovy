@@ -18,7 +18,7 @@ def call(Map pipelineParams) {
             stage('build') {
                 steps {
                     echo 'build stage................................'
-                    sh "docker build -t ${pipelineParams.NAME}:${BUILD_NUMBER} --build-arg BUILD_NUM=${BUILD_NUMBER} ."
+                    sh "docker build -t ${pipelineParams.NAME}:build-${BUILD_NUMBER} --build-arg BUILD_NUM=${BUILD_NUMBER} ."
                 }
             }
 
