@@ -28,11 +28,11 @@ def call(Map pipelineParams) {
                 }
             }
         }
-    }
-    post {
-        always {
-            echo 'clean................................'
-            deleteDir()
+        post {
+            always {
+                echo 'clean................................'
+                deleteDir()
+            }
         }
     }
 }
