@@ -8,26 +8,31 @@ def call(Map pipelineParams) {
                     expression { return fileExists('Dockerfile.compile') }
                 }
                 steps {
-                    echo 'compile stage...'
-                    echo WORKSPACE
+                    echo 'compile stage................................'
                     sh "mkdir ${BUILD_NUMBER}"
                     sh "docker build -t ${pipelineParams.NAME}:compile -f Dockerfile.compile ."
-                    sh "docker run -u root --rm -v ${sh 'pwd'}:${pipelineParams.srcPath} -v ${sh 'pwd'}/${BUILD_NUMBER}:${pipelineParams.binPath} ${pipelineParams.NAME}:compile"
+                    sh "docker run -u root --rm -v ${WORKSPACE}:${pipelineParams.srcPath} -v ${WORKSPACE}/${BUILD_NUMBER}:${pipelineParams.binPath} ${pipelineParams.NAME}:compile"
                 }
             }
             
             stage('build') {
                 steps {
-                    echo 'build stage...'
+                    echo 'build stage................................'
                     sh "docker build -t ${pipelineParams.NAME}:latest --build-arg BUILD_NUM=${BUILD_NUMBER} --build-arg WORKSPACE=${WORKSPACE} ."
                 }
             }
 
             stage('deploy staging'){
                 steps {
-                    echo 'deploy staging...'
+                    echo 'deploy staging................................'
                 }
             }
+        }
+    }
+    post {
+        always {
+            echo 'clean................................'
+            sh "rm -rf ${BUILD_NUMBER}"
         }
     }
 }
