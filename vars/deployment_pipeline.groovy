@@ -32,7 +32,7 @@ def call(Map pipelineParams) {
     post {
         always {
             echo 'clean................................'
-            sh "rm -rf ${BUILD_NUMBER}"
+            deleteDir()
         }
     }
 }
