@@ -9,9 +9,9 @@ def call(Map pipelineParams) {
                 }
                 steps {
                     echo 'compile stage...'
-                    sh 'mkdir ${BUILD_NUMBER}'
-                    sh 'docker build -t ${pipelineParams.NAME}:compile -f Dockerfile.compile .'
-                    sh 'docker run -u root --rm -v ${WORKSPACE}:${pipelineParams.srcPath} -v ${BUILD_NUMBER}:${pipelineParams.binPath} ${pipelineParams.NAME}:compile'
+                    sh "mkdir ${BUILD_NUMBER}"
+                    sh "docker build -t ${pipelineParams.NAME}:compile -f Dockerfile.compile ."
+                    sh "docker run -u root --rm -v ${WORKSPACE}:${pipelineParams.srcPath} -v ${BUILD_NUMBER}:${pipelineParams.binPath} ${pipelineParams.NAME}:compile"
                 }
             }
         }
