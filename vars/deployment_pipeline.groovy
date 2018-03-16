@@ -3,12 +3,6 @@ def call(Map pipelineParams) {
     pipeline {
         agent any
         stages {
-            stage('checkout git') {
-                steps {
-                    git branch: pipelineParams.branch, credentialsId: 'GitCredentials', url: pipelineParams.scmUrl
-                }
-            }
-
             stage('compile') {
                 when {
                     expression { return fileExists('Dockerfile.compile') }
@@ -20,7 +14,6 @@ def call(Map pipelineParams) {
                     sh 'docker run -u root --rm -v ${WORKSPACE}:${pipelineParams.srcPath} -v ${BUILD_NUMBER}:${pipelineParams.binPath} ${pipelineParams.NAME}:compile'
                 }
             }
-
         }
     }
 }
