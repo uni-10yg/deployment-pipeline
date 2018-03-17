@@ -24,10 +24,11 @@ def call(Map pipelineParams) {
             
             stage('pre staging') {
                 when {
-                    expression { return "docker inspect -f {{.State.Running}} ${pipelineParams.NAME}:build-${BUILD_NUMBER}" }
+                    expression { return "docker inspect -f {{.State.Running}} ${pipelineParams.NAME}" }
                 }
                 steps {
-                    sh "docker stop ${pipelineParams.NAME}:build-${BUILD_NUMBER}"
+                    echo 'pre staging cleanup................................'
+                    sh "docker stop ${pipelineParams.NAME}"
                 }
             }
 
