@@ -34,8 +34,8 @@ def call(Map pipelineParams) {
                     echo '................................deploy staging................................'
                     script {
                         port = sh (
--                            script: "docker inspect --format='{{range \$p, \$conf := .Config.ExposedPorts}} {{\$p}} {{end}}' ${pipelineParams.NAME}:build-${BUILD_NUMBER} | cut -f1 -d\"/\")",
--                            returnStdout: true
+                            script: "docker inspect --format='{{range \$p, \$conf := .Config.ExposedPorts}} {{\$p}} {{end}}' ${pipelineParams.NAME}:build-${BUILD_NUMBER} | cut -f1 -d\"/\"",
+                            returnStdout: true
                         )
                         echo port
                     }
