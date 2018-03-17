@@ -21,6 +21,15 @@ def call(Map pipelineParams) {
                     sh "docker build -t ${pipelineParams.NAME}:build-${BUILD_NUMBER} --build-arg BUILD_NUM=${BUILD_NUMBER} ."
                 }
             }
+            
+            stage('pre staging') {
+                when {
+                    expression { return sh "docker inspect -f {{.State.Running}} ${pipelineParams.NAME}:build-${BUILD_NUMBER}"}
+                }
+                steps {
+                    sh "docker stop ${pipelineParams.NAME}:build-${BUILD_NUMBER}"
+                }
+            }
 
             stage('deploy staging'){
                 steps {
