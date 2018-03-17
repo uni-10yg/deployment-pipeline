@@ -28,8 +28,8 @@ def call(Map pipelineParams) {
                     script {
                         status = sh (
                             script: "docker inspect -f {{.State.Running}} ${pipelineParams.NAME}",
-                            returnStdout: true
-                        )
+                            returnStatus: true
+                        ) == 0
                         echo status
                         if (status == 'true') {
                             sh (
