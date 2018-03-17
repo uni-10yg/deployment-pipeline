@@ -32,7 +32,7 @@ def call(Map pipelineParams) {
             stage('deploy staging') {
                 steps {
                     echo '................................deploy staging................................'
-                    sh "port=\$(docker inspect --format='{{range \$p, \$conf := .Config.ExposedPorts}} {{\$p}} {{end}}' ${pipelineParams.NAME}:build-${BUILD_NUMBER} | cut -f1 -d\"/\") && docker run -d --rm -p \$(echo \$port):\$(echo \$port) --name ${pipelineParams.NAME} ${pipelineParams.NAME}:build-${BUILD_NUMBER}"
+                    sh "port=\$(docker inspect --format='{{range \$p, \$conf := .Config.ExposedPorts}} {{\$p}} {{end}}' ${pipelineParams.NAME}:build-${BUILD_NUMBER} | cut -f1 -d\"/\") && docker run -d --rm -p \$(echo \$port):\$(echo \$port) --network staging --name ${pipelineParams.NAME} ${pipelineParams.NAME}:build-${BUILD_NUMBER}"
                 }
             }
             
