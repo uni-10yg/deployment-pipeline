@@ -30,6 +30,7 @@ def call(Map pipelineParams) {
                             script: "docker inspect -f {{.State.Running}} ${pipelineParams.NAME}",
                             returnStdout: true
                         )
+                        echo status
                         if (status == 'true') {
                             sh (
                                 script: "docker stop ${pipelineParams.NAME}",
