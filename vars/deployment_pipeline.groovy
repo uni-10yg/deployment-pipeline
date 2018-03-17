@@ -23,12 +23,17 @@ def call(Map pipelineParams) {
             }
             
             stage('pre staging') {
-                when {
-                    expression { return "docker inspect -f {{.State.Running}} ${pipelineParams.NAME}" }
-                }
+                //when {
+                    //expression { return "docker inspect -f {{.State.Running}} ${pipelineParams.NAME}" }
+                //}
                 steps {
                     echo 'pre staging cleanup................................'
                     sh "docker stop ${pipelineParams.NAME}"
+                }
+                post {
+                    failure {
+                        echo "no running ${pipelineParams.NAME} instance found"
+                    }
                 }
             }
 
