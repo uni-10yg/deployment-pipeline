@@ -8,7 +8,7 @@ def call(Map pipelineParams) {
                     expression { return fileExists('Dockerfile.compile') }
                 }
                 steps {
-                    echo 'compile stage................................'
+                    echo '................................compile stage................................'
                     sh "mkdir ${BUILD_NUMBER}"
                     sh "docker build -t ${pipelineParams.NAME}:compile -f Dockerfile.compile ."
                     sh "docker run -u root --rm -v ${WORKSPACE}:${pipelineParams.srcPath} -v ${WORKSPACE}/${BUILD_NUMBER}:${pipelineParams.binPath} ${pipelineParams.NAME}:compile"
@@ -17,7 +17,7 @@ def call(Map pipelineParams) {
             
             stage('build') {
                 steps {
-                    echo 'build stage................................'
+                    echo '................................build stage................................'
                     sh "docker build -t ${pipelineParams.NAME}:build-${BUILD_NUMBER} --build-arg BUILD_NUM=${BUILD_NUMBER} ."
                 }
             }
@@ -27,7 +27,7 @@ def call(Map pipelineParams) {
                     //expression { return "docker inspect -f {{.State.Running}} ${pipelineParams.NAME}" }
                 //}
                 steps {
-                    echo 'pre staging cleanup................................'
+                    echo '................................pre staging cleanup................................'
                     sh "docker stop ${pipelineParams.NAME}"
                 }
                 post {
@@ -35,17 +35,15 @@ def call(Map pipelineParams) {
                         echo "no running ${pipelineParams.NAME} instance found"
                     }
                     always {
-                        steps {
-                            echo 'deploy staging................................'
-                            sh "port=\$(docker inspect --format='{{range \$p, \$conf := .Config.ExposedPorts}} {{\$p}} {{end}}' ${pipelineParams.NAME}:build-${BUILD_NUMBER} | cut -f1 -d\"/\") && docker run -d --rm -p \$(echo \$port):\$(echo \$port) --name ${pipelineParams.NAME} ${pipelineParams.NAME}:build-${BUILD_NUMBER}"
-                        }
+                        echo '................................deploy staging................................'
+                        sh "port=\$(docker inspect --format='{{range \$p, \$conf := .Config.ExposedPorts}} {{\$p}} {{end}}' ${pipelineParams.NAME}:build-${BUILD_NUMBER} | cut -f1 -d\"/\") && docker run -d --rm -p \$(echo \$port):\$(echo \$port) --name ${pipelineParams.NAME} ${pipelineParams.NAME}:build-${BUILD_NUMBER}"
                     }
                 }
             }
         }
         post {
             always {
-                echo 'clean................................'
+                echo '................................clean workspace................................'
                 deleteDir()
             }
         }
