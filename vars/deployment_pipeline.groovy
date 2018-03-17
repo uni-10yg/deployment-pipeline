@@ -25,8 +25,7 @@ def call(Map pipelineParams) {
             stage('deploy staging'){
                 steps {
                     echo 'deploy staging................................'
-                    sh "port=\$(docker inspect --format='{{range \$p, \$conf := .Config.ExposedPorts}} {{\$p}} {{end}}' ${pipelineParams.NAME}:build-${BUILD_NUMBER} | cut -f1 -d\"/\")"
-                    sh 'echo \$port'
+                    sh "port=\$(docker inspect --format='{{range \$p, \$conf := .Config.ExposedPorts}} {{\$p}} {{end}}' ${pipelineParams.NAME}:build-${BUILD_NUMBER} | cut -f1 -d\"/\") && docker run --rm -p $(echo \$port):$(echo \$port) ${pipelineParams.NAME}:build-${BUILD_NUMBER}"
                 }
             }
         }
