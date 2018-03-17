@@ -27,9 +27,9 @@ def call(Map pipelineParams) {
                     echo '................................pre deploy cleanup................................'
                     script {
                         status = sh (
-                            script: "docker inspect -f {{.State.Running}} ${pipelineParams.NAME}",
-                            returnStatus: true
-                        ) == 0
+                            script: "docker inspect -f {{.State.Running}} ${pipelineParams.NAME} || true",
+                            returnStdout: true
+                        )
                         echo status
                         if (status == 'true') {
                             sh (
