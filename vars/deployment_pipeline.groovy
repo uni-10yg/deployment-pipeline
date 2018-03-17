@@ -22,24 +22,31 @@ def call(Map pipelineParams) {
                 }
             }
             
-            stage('deploy staging') {
-                //when {
-                    //expression { return "docker inspect -f {{.State.Running}} ${pipelineParams.NAME}" }
-                //}
+            stage('pre deploy') {
                 steps {
-                    echo '................................pre staging cleanup................................'
-                    sh "docker stop ${pipelineParams.NAME}"
-                }
-                post {
-                    failure {
-                        echo "no running ${pipelineParams.NAME} instance found"
-                    }
-                    always {
-                        echo '................................deploy staging................................'
-                        sh "port=\$(docker inspect --format='{{range \$p, \$conf := .Config.ExposedPorts}} {{\$p}} {{end}}' ${pipelineParams.NAME}:build-${BUILD_NUMBER} | cut -f1 -d\"/\") && docker run -d --rm -p \$(echo \$port):\$(echo \$port) --name ${pipelineParams.NAME} ${pipelineParams.NAME}:build-${BUILD_NUMBER}"
+                    echo '................................pre deploy cleanup................................'
+                    script {
+                        status = sh (
+                            script: "docker inspect -f {{.State.Running}} ${pipelineParams.NAME}",
+                            returnStdout: true
+                        )
+                        if (status == 'true') {
+                            sh (
+                                script: "docker stop ${pipelineParams.NAME}"
+                                returnStdout: false
+                            )
+                        }
                     }
                 }
             }
+            
+            stage('deploy staging') {
+                steps {
+                    echo '................................deploy staging................................'
+                    sh "port=\$(docker inspect --format='{{range \$p, \$conf := .Config.ExposedPorts}} {{\$p}} {{end}}' ${pipelineParams.NAME}:build-${BUILD_NUMBER} | cut -f1 -d\"/\") && docker run -d --rm -p \$(echo \$port):\$(echo \$port) --name ${pipelineParams.NAME} ${pipelineParams.NAME}:build-${BUILD_NUMBER}"
+                }
+            }
+            
         }
         post {
             always {
