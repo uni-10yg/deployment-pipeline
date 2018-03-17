@@ -25,12 +25,7 @@ def call(Map pipelineParams) {
             stage('pre deploy') {
                 steps {
                     echo '................................pre deploy cleanup................................'
-                    script {
-                        sh (
-                            script: "docker stop ${pipelineParams.NAME} || echo 'nothing to do'",
-                            returnStdout: false
-                        )
-                    }
+                    sh "docker stop ${pipelineParams.NAME} || echo 'nothing to do'"
                 }
             }
             
