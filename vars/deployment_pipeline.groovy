@@ -32,7 +32,7 @@ def call(Map pipelineParams) {
                         )
                         if (status == 'true') {
                             sh (
-                                script: "docker stop ${pipelineParams.NAME}"
+                                script: "docker stop ${pipelineParams.NAME}",
                                 returnStdout: false
                             )
                         }
